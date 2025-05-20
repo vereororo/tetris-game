@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Mobile Tetris</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            touch-action: none; /* Prevent default touch behaviors */
+            font-family: Arial, sans-serif;
+        }
+        #gameContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #gameCanvas {
+            border: 2px solid #333;
+            background-color: #fff;
+            max-width: 100%;
+            touch-action: none;
+        }
+        #score {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        #controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+            width: 300px;
+            max-width: 90%;
+        }
+        button {
+            padding: 15px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        button:active {
+            background-color: #45a049;
+        }
+        @media (max-width: 600px) {
+            #gameCanvas {
+                width: 300px;
+                height: 600px;
+            }
+            #controls {
+                width: 100%;
+            }
+            button {
+                padding: 10px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="score">Score: 0</div>
+        <canvas id="gameCanvas" width="300" height="600"></canvas>
+        <div id="controls">
+            <button onclick="moveLeft()">Left</button>
+            <button onclick="rotate()">Rotate</button>
+            <button onclick="moveRight()">Right</button>
+            <button onclick="moveDown()">Down</button>
+            <button onclick="drop()">Drop</button>
+            <button onclick="startGame()">Start/Restart</button>
+        </div>
+    </div>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('score');
+        
+        const gridSize = 30;
+        const cols = canvas.width / gridSize;
+        const rows = canvas.height / gridSize;
+        let board = [];
+        let currentPiece = null;
+        let score = 0;
+        let gameLoop = null;
+        let gameOver = false;
+
+        // Tetromino shapes
+        const shapes = [
+            [[1, 1, 1, 1]], // I
+            [[1, 1], [1, 1]], // O
+            [[1, 1, 1], [0, 1, 0]], // T
+            [[1, 1, 1], [1, 0, 0]], // L
+            [[1, 1, 1], [0, 0, 1
